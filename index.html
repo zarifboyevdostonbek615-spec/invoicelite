@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InvoiceLite - Free Invoice Maker</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f3f6fc;color:#172033}
+header{background:#142b50;color:white;padding:25px 18px}
+header h1{margin:0;font-size:27px}
+header p{color:#c5d5ed;margin-bottom:0}
+main{max-width:850px;margin:25px auto;padding:15px}
+.card{background:white;padding:22px;border-radius:15px;box-shadow:0 4px 20px #0000000b}
+h2{margin-top:0;color:#173c70}
+input{width:100%;padding:12px;margin:6px 0 14px;border:1px solid #d5deeb;border-radius:8px;font-size:15px}
+label{font-size:13px;font-weight:bold;color:#53647c}
+.row{display:grid;grid-template-columns:2fr 1fr 1fr;gap:8px}
+button{border:0;border-radius:8px;padding:13px 17px;background:#1769db;color:white;font-weight:bold;font-size:14px;margin:5px 3px;cursor:pointer}
+.secondary{background:#e9f0fa;color:#19416e}
+.total{text-align:right;font-size:23px;font-weight:bold;margin:20px 0;color:#1769db}
+footer{text-align:center;color:#718096;padding:25px}
+@media(max-width:550px){.row{grid-template-columns:1fr 1fr}.row input:first-child{grid-column:span 2}}
+@media print{header,footer,.buttons{display:none}body{background:white}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<header>
+<h1>InvoiceLite</h1>
+<p>Create professional invoices for free.</p>
+</header>
+<main>
+<div class="card">
+<h2>Create your invoice</h2>
+<label>Invoice number</label>
+<input id="number" value="INV-001">
+<label>Your business name</label>
+<input id="business" placeholder="Business name">
+<label>Customer name</label>
+<input id="customer" placeholder="Customer name">
+<label>Invoice date</label>
+<input id="date" type="date">
+<h2>Products and services</h2>
+<div id="items"></div>
+<button onclick="addItem()" class="secondary">+ Add item</button>
+<div class="total">Total: $<span id="total">0.00</span></div>
+<div class="buttons">
+<button onclick="window.print()">Download / Save PDF</button>
+<button class="secondary" onclick="resetForm()">New invoice</button>
+</div>
+</div>
+</main>
+<footer>© 2026 InvoiceLite. Free Invoice Generator.</footer>
+<script>
+function addItem(){
+const div=document.createElement('div');
+div.className='row';
+div.innerHTML=`
+<input placeholder="Product name" class="name">
+<input type="number" min="0" placeholder="Price" class="price" oninput="calculate()">
+<input type="number" min="0" placeholder="Quantity" value="1" class="qty" oninput="calculate()">`;
+document.getElementById('items').appendChild(div);
+}
+function calculate(){
+let total=0;
+document.querySelectorAll('#items .row').forEach(row=>{
+let p=Number(row.querySelector('.price').value)||0;
+let q=Number(row.querySelector('.qty').value)||0;
+total+=p*q;
+});
+document.getElementById('total').textContent=total.toFixed(2);
+}
+function resetForm(){
+document.getElementById('items').innerHTML='';
+document.getElementById('business').value='';
+document.getElementById('customer').value='';
+document.getElementById('number').value='INV-001';
+calculate();
+addItem();
+}
+document.getElementById('date').valueAsDate=new Date();
+addItem();
+</script>
+</body>
+</html>
